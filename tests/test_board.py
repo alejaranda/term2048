@@ -1,4 +1,13 @@
-from board import add_random_tiles, create_board, move_down, move_right, move_up
+from board import (
+    add_random_tiles,
+    can_move,
+    create_board,
+    has_won,
+    is_game_over,
+    move_down,
+    move_right,
+    move_up,
+)
 
 
 def test_add_random_tiles_return_false():
@@ -63,3 +72,47 @@ def test_move_down_without_change_returns_false():
 
     assert moved == board
     assert has_moved is False
+
+
+def test_has_won_returns_true_when_target_is_reached():
+    board = [
+        [2, 4, 8, 16],
+        [32, 64, 128, 256],
+        [512, 1024, 2048, 0],
+        [0, 0, 0, 0],
+    ]
+
+    assert has_won(board) is True
+
+
+def test_can_move_returns_true_when_zero_exists():
+    board = [
+        [2, 4, 8, 16],
+        [32, 64, 128, 256],
+        [512, 1024, 2, 4],
+        [8, 16, 32, 0],
+    ]
+
+    assert can_move(board) is True
+
+
+def test_can_move_returns_true_when_adjacent_merge_exists():
+    board = [
+        [2, 4, 8, 16],
+        [32, 64, 128, 256],
+        [512, 1024, 2, 4],
+        [8, 16, 16, 32],
+    ]
+
+    assert can_move(board) is True
+
+
+def test_is_game_over_returns_true_when_no_moves_available():
+    board = [
+        [2, 4, 8, 16],
+        [32, 64, 128, 256],
+        [512, 1024, 2, 4],
+        [8, 16, 32, 64],
+    ]
+
+    assert is_game_over(board) is True

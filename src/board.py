@@ -98,3 +98,30 @@ def move_down(board: Board) -> Tuple[Board, bool]:
     transposed_board = _transpose(board)
     moved_board, has_moved = move_right(transposed_board)
     return _transpose(moved_board), has_moved
+
+
+def has_won(board: Board, target: int = 2048) -> bool:
+    return any(value >= target for row in board for value in row)
+
+
+def can_move(board: Board) -> bool:
+    if any(value == 0 for row in board for value in row):
+        return True
+
+    board_size = len(board)
+
+    for row_idx in range(board_size):
+        for col_idx in range(board_size):
+            current = board[row_idx][col_idx]
+
+            if col_idx + 1 < board_size and board[row_idx][col_idx + 1] == current:
+                return True
+
+            if row_idx + 1 < board_size and board[row_idx + 1][col_idx] == current:
+                return True
+
+    return False
+
+
+def is_game_over(board: Board) -> bool:
+    return not can_move(board)
