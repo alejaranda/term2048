@@ -72,3 +72,29 @@ def move_left(board: Board) -> Tuple[Board, bool]:
             has_any_movement = True
 
     return transformed_board, has_any_movement
+
+
+def _reverse_rows(board: Board) -> Board:
+    return [list(reversed(row)) for row in board]
+
+
+def _transpose(board: Board) -> Board:
+    return [list(row) for row in zip(*board)]
+
+
+def move_right(board: Board) -> Tuple[Board, bool]:
+    reversed_board = _reverse_rows(board)
+    moved_board, has_moved = move_left(reversed_board)
+    return _reverse_rows(moved_board), has_moved
+
+
+def move_up(board: Board) -> Tuple[Board, bool]:
+    transposed_board = _transpose(board)
+    moved_board, has_moved = move_left(transposed_board)
+    return _transpose(moved_board), has_moved
+
+
+def move_down(board: Board) -> Tuple[Board, bool]:
+    transposed_board = _transpose(board)
+    moved_board, has_moved = move_right(transposed_board)
+    return _transpose(moved_board), has_moved
