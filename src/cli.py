@@ -250,7 +250,10 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not sys.stdin.isatty() or not sys.stdout.isatty():
         parser.error("term2048 requires an interactive terminal (TTY).")
 
-    run()
+    try:
+        run()
+    except KeyboardInterrupt:
+        return 0
     return 0
 
 
