@@ -1,4 +1,6 @@
+import argparse
 import curses
+import sys
 from time import monotonic
 from typing import Dict, Optional, Tuple
 
@@ -241,5 +243,16 @@ def run() -> None:
     curses.wrapper(_run_loop)
 
 
-if __name__ == "__main__":
+def main(argv: Optional[list[str]] = None) -> int:
+    parser = argparse.ArgumentParser(description="Play 2048 in your terminal.")
+    parser.parse_args(argv)
+
+    if not sys.stdin.isatty() or not sys.stdout.isatty():
+        parser.error("term2048 requires an interactive terminal (TTY).")
+
     run()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
