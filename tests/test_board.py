@@ -5,6 +5,7 @@ from board import (
     has_won,
     is_game_over,
     move_down,
+    move_left_with_score,
     move_right,
     move_up,
 )
@@ -116,3 +117,23 @@ def test_is_game_over_returns_true_when_no_moves_available():
     ]
 
     assert is_game_over(board) is True
+
+
+def test_move_left_with_score_accumulates_merged_values():
+    board = [
+        [2, 2, 4, 4],
+        [0, 0, 0, 0],
+        [2, 0, 2, 0],
+        [4, 4, 4, 0],
+    ]
+
+    moved, has_moved, score_delta = move_left_with_score(board)
+
+    assert moved == [
+        [4, 8, 0, 0],
+        [0, 0, 0, 0],
+        [4, 0, 0, 0],
+        [8, 4, 0, 0],
+    ]
+    assert has_moved is True
+    assert score_delta == 24

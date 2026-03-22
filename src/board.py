@@ -3,6 +3,8 @@ from typing import List, Tuple
 
 Board = List[List[int]]
 EmptyPositions = Tuple[int, int]
+SlideResult = Tuple[List[int], bool, int]
+MoveResult = Tuple[Board, bool, int]
 
 
 def create_board(size: int = 4) -> Board:
@@ -38,9 +40,15 @@ def add_random_tiles(board: Board, count: int = 1) -> bool:
 
 
 def slide_row(row: List[int]) -> Tuple[List[int], bool]:
+    result, changed, _ = slide_row_with_score(row)
+    return result, changed
+
+
+def slide_row_with_score(row: List[int]) -> SlideResult:
     non_zero = [num for num in row if num != 0]
     merged: List[int] = []
     i = 0
+    score_delta = 0
 
     while i < len(non_zero):
         current_tile = non_zero[i]
@@ -48,7 +56,9 @@ def slide_row(row: List[int]) -> Tuple[List[int], bool]:
         next_tile_equals = has_next_tile and non_zero[i + 1] == current_tile
 
         if next_tile_equals:
-            merged.append(current_tile * 2)
+            merged_value = current_tile * 2
+            merged.append(merged_value)
+            score_delta += merged_value
             i += 2
         else:
             merged.append(current_tile)
@@ -57,21 +67,28 @@ def slide_row(row: List[int]) -> Tuple[List[int], bool]:
     result = merged + [0] * (len(row) - len(merged))
     changed = result != row
 
-    return result, changed
+    return result, changed, score_delta
 
 
 def move_left(board: Board) -> Tuple[Board, bool]:
+    transformed_board, has_any_movement, _ = move_left_with_score(board)
+    return transformed_board, has_any_movement
+
+
+def move_left_with_score(board: Board) -> MoveResult:
     transformed_board: Board = []
     has_any_movement = False
+    score_delta = 0
 
     for current_row in board:
-        transformed_row, row_has_changed = slide_row(current_row)
+        transformed_row, row_has_changed, row_score = slide_row_with_score(current_row)
         transformed_board.append(transformed_row)
+        score_delta += row_score
 
         if row_has_changed:
             has_any_movement = True
 
-    return transformed_board, has_any_movement
+    return transformed_board, has_any_movement, score_delta
 
 
 def _reverse_rows(board: Board) -> Board:
@@ -83,21 +100,36 @@ def _transpose(board: Board) -> Board:
 
 
 def move_right(board: Board) -> Tuple[Board, bool]:
+    moved_board, has_moved, _ = move_right_with_score(board)
+    return moved_board, has_moved
+
+
+def move_right_with_score(board: Board) -> MoveResult:
     reversed_board = _reverse_rows(board)
-    moved_board, has_moved = move_left(reversed_board)
-    return _reverse_rows(moved_board), has_moved
+    moved_board, has_moved, score_delta = move_left_with_score(reversed_board)
+    return _reverse_rows(moved_board), has_moved, score_delta
 
 
 def move_up(board: Board) -> Tuple[Board, bool]:
+    moved_board, has_moved, _ = move_up_with_score(board)
+    return moved_board, has_moved
+
+
+def move_up_with_score(board: Board) -> MoveResult:
     transposed_board = _transpose(board)
-    moved_board, has_moved = move_left(transposed_board)
-    return _transpose(moved_board), has_moved
+    moved_board, has_moved, score_delta = move_left_with_score(transposed_board)
+    return _transpose(moved_board), has_moved, score_delta
 
 
 def move_down(board: Board) -> Tuple[Board, bool]:
+    moved_board, has_moved, _ = move_down_with_score(board)
+    return moved_board, has_moved
+
+
+def move_down_with_score(board: Board) -> MoveResult:
     transposed_board = _transpose(board)
-    moved_board, has_moved = move_right(transposed_board)
-    return _transpose(moved_board), has_moved
+    moved_board, has_moved, score_delta = move_right_with_score(transposed_board)
+    return _transpose(moved_board), has_moved, score_delta
 
 
 def has_won(board: Board, target: int = 2048) -> bool:
