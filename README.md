@@ -1,11 +1,5 @@
 # 🎮 term2048
 
-2048 playable directly in the terminal.
-
-Small Python implementation focused on **clean logic, simple structure, and testable mechanics**.
-
----
-
 ## 📦 What's inside
 
 - **🧠 Game logic**  
@@ -21,6 +15,28 @@ Small Python implementation focused on **clean logic, simple structure, and test
   Small helper scripts for development.
 
 ---
+
+## 📸 Demo
+
+![demo](./demo.gif)
+
+---
+
+## ⚡ Install
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install term2048
+```
+
+## 🚀 Usage
+```bash
+term2048
+```
+### Controls
+↑ ↓ ← → → move tiles
+q → quit
 
 ## 🧪 Run tests
 
